@@ -21,9 +21,9 @@ type CustomLogger interface {
 
 func NewCustomLogger() *customLogger {
 	return &customLogger{
-		info:  log.New(os.Stdout, "INFO: ", log.Ldate|log.Lshortfile),
-		warn:  log.New(os.Stdout, "WARN: ", log.Ldate|log.Lshortfile),
-		error: log.New(os.Stdout, "ERROR: ", log.Ldate|log.Lshortfile),
+		info:  log.New(os.Stdout, "INFO: ", log.Ldate),
+		warn:  log.New(os.Stdout, "WARN: ", log.Ldate),
+		error: log.New(os.Stdout, "ERROR: ", log.Ldate),
 	}
 }
 
