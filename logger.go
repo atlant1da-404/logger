@@ -20,15 +20,18 @@ type CustomLogger interface {
 	GetLogger() *customLogger
 }
 
+var instance *customLogger
+
 func NewCustomLogger() *customLogger {
-	return &customLogger{
+
+	instance = &customLogger{
 		info:  log.New(os.Stdout, "INFO: ", log.Ldate),
 		warn:  log.New(os.Stdout, "WARN: ", log.Ldate),
 		error: log.New(os.Stdout, "ERROR: ", log.Ldate),
 	}
-}
 
-var instance *customLogger
+	return instance
+}
 
 var (
 	red    = color("\033[1;31m%s\033[0m")
