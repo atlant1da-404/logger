@@ -17,6 +17,7 @@ type CustomLogger interface {
 	InfoLog(v ...interface{})
 	WarnLog(v ...interface{})
 	ErrorLog(v ...interface{})
+	GetLogger() *customLogger
 }
 
 func NewCustomLogger() *customLogger {
@@ -26,6 +27,8 @@ func NewCustomLogger() *customLogger {
 		error: log.New(os.Stdout, "ERROR: ", log.Ldate),
 	}
 }
+
+var instance *customLogger
 
 var (
 	red    = color("\033[1;31m%s\033[0m")
@@ -43,6 +46,10 @@ func (l *customLogger) WarnLog(v ...interface{}) {
 
 func (l *customLogger) ErrorLog(v ...interface{}) {
 	l.error.Println(red(v...))
+}
+
+func (l *customLogger) GetLogger() *customLogger {
+	return instance
 }
 
 func color(colorCode string) func(...interface{}) string {
