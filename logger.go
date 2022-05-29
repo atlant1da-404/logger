@@ -17,7 +17,6 @@ type CustomLogger interface {
 	InfoLog(v ...interface{})
 	WarnLog(v ...interface{})
 	ErrorLog(v ...interface{})
-	GetLogger() *customLogger
 }
 
 var instance *customLogger
@@ -51,7 +50,7 @@ func (l *customLogger) ErrorLog(v ...interface{}) {
 	l.error.Println(red(v...))
 }
 
-func (l *customLogger) GetLogger() *customLogger {
+func GetLogger() *customLogger {
 	return instance
 }
 
