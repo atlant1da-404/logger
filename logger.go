@@ -102,6 +102,12 @@ func (c *customColors) Prefix(color func(...interface{}) string, prefix string) 
 func (c *customColors) Console(v ...interface{}) *customLogger {
 	logger := NewCustomLogger()
 	logger.tempData = fmt.Sprintf("%v", v)
+
+	if len([]rune(c.prefix)) == 0 || c.color == nil {
+		c.color = White
+		c.prefix = "DEFAULT: "
+	}
+
 	log.New(os.Stdout, c.color(c.prefix), log.Ldate).Println(v...)
 
 	return logger
