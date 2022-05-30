@@ -7,14 +7,14 @@ import (
 )
 
 var (
-	Black   = color("\033[1;30m%s\033[0m")
-	Red     = color("\033[1;31m%s\033[0m")
-	Green   = color("\033[1;32m%s\033[0m")
-	Yellow  = color("\033[1;33m%s\033[0m")
-	Blue    = color("\033[1;34m%s\033[0m")
-	Magenta = color("\033[1;35m%s\033[0m")
-	Teal    = color("\033[1;36m%s\033[0m")
-	White   = color("\033[1;37m%s\033[0m")
+	Black  = color("\033[1;30m%s\033[0m")
+	Red    = color("\033[1;31m%s\033[0m")
+	Green  = color("\033[1;32m%s\033[0m")
+	Yellow = color("\033[1;33m%s\033[0m")
+	Blue   = color("\033[1;34m%s\033[0m")
+	Purple = color("\033[1;35m%s\033[0m")
+	Teal   = color("\033[1;36m%s\033[0m")
+	White  = color("\033[1;37m%s\033[0m")
 )
 
 type customLogger struct {
@@ -38,8 +38,7 @@ type CustomLogger interface {
 	Warn(v ...interface{}) *customLogger
 	Error(v ...interface{}) *customLogger
 	Debug(v ...interface{}) *customLogger
-	FileLog(fileName string, v ...interface{})
-	File(file string) *customLogger
+	File(fileName string, v ...interface{})
 }
 
 type CustomColors interface {
@@ -108,7 +107,12 @@ func (c *customColors) Console(v ...interface{}) *customLogger {
 	return logger
 }
 
-func (l *customLogger) File(file string) *customLogger {
+func (l *customLogger) File(file string, v ...interface{}) {
+
+	if len(v) != 0 {
+		l.tempData = fmt.Sprintf("%v", v)
+	}
+
 	// if we are logging in another file we are out from previous (close)
 	if fileOs != nil && fileOs.Name() != file {
 		fileOs.Close()
@@ -119,22 +123,7 @@ func (l *customLogger) File(file string) *customLogger {
 
 	fileOs = f
 	logger := log.New(f, "", log.LstdFlags)
-	logger.Println(fmt.Sprintf("%v", l.tempData))
-	return l
-}
-
-func (l *customLogger) FileLog(file string, v ...interface{}) {
-	// if we are logging in another file we are out from previous (close)
-	if fileOs != nil && fileOs.Name() != file {
-		fileOs.Close()
-	}
-
-	f, _ := os.OpenFile(file,
-		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-
-	fileOs = f
-	logger := log.New(f, "", log.LstdFlags)
-	logger.Println(fmt.Sprintf("%v", v))
+	logger.Println(l.tempData)
 }
 
 func color(colorCode string) func(...interface{}) string {
