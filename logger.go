@@ -66,7 +66,6 @@ func NewCustomLogger() *customLogger {
 }
 
 func (l *customLogger) Info(v ...interface{}) *customLogger {
-
 	l.info.Println(v...)
 	l.tempData = fmt.Sprintf("%v", v)
 	return l
@@ -102,7 +101,6 @@ func (c *customColors) Prefix(color func(...interface{}) string, prefix string) 
 }
 
 func (c *customColors) Console(v ...interface{}) *customLogger {
-
 	logger := NewCustomLogger()
 	logger.tempData = fmt.Sprintf("%v", v)
 	log.New(os.Stdout, c.color(c.prefix), log.Ldate).Println(v...)
@@ -111,7 +109,6 @@ func (c *customColors) Console(v ...interface{}) *customLogger {
 }
 
 func (l *customLogger) File(file string) *customLogger {
-
 	// if we are logging in another file we are out from previous (close)
 	if fileOs != nil && fileOs.Name() != file {
 		fileOs.Close()
@@ -120,15 +117,13 @@ func (l *customLogger) File(file string) *customLogger {
 	f, _ := os.OpenFile(file,
 		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
+	fileOs = f
 	logger := log.New(f, "", log.LstdFlags)
 	logger.Println(fmt.Sprintf("%v", l.tempData))
-
-	fileOs = f
 	return l
 }
 
 func (l *customLogger) FileLog(file string, v ...interface{}) {
-
 	// if we are logging in another file we are out from previous (close)
 	if fileOs != nil && fileOs.Name() != file {
 		fileOs.Close()
@@ -137,12 +132,9 @@ func (l *customLogger) FileLog(file string, v ...interface{}) {
 	f, _ := os.OpenFile(file,
 		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
-	defer f.Close()
-
 	fileOs = f
 	logger := log.New(f, "", log.LstdFlags)
 	logger.Println(fmt.Sprintf("%v", v))
-
 }
 
 func color(colorCode string) func(...interface{}) string {
