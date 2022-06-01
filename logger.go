@@ -162,19 +162,6 @@ func (l *customLogger) File(fileName string, v ...interface{}) {
 
 // FileF write a data in file with message
 func (l *customLogger) FileF(fileName, msg string, v ...interface{}) {
-	if len(v) != 0 {
-		l.tempData = fmt.Sprintf("%v", v)
-	}
-
-	// if we are logging in another file we are out from previous (close)
-	if fileOs != nil && fileOs.Name() != fileName {
-		_ = fileOs.Close()
-	}
-
-	f, _ := os.OpenFile(fileName,
-		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-
-	fileOs = f
-	logger := log.New(f, "", log.LstdFlags)
-	logger.Println(msg, l.tempData)
+	l.tempData = fmt.Sprintf("%s %v", msg, v)
+	l.File(fileName)
 }
