@@ -2,6 +2,7 @@ package logger
 
 import "fmt"
 
+// Colors
 var (
 	Black  = color("\033[1;30m%s\033[0m")
 	Red    = color("\033[1;31m%s\033[0m")
