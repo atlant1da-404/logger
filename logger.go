@@ -22,9 +22,9 @@ type CustomLogger interface {
 	Warn(v ...interface{}) *customLogger
 	Error(v ...interface{}) *customLogger
 	Debug(v ...interface{}) *customLogger
-	File(fileName string, v ...interface{})
-	Prefix(color func(...interface{}) string, prefix string) *customLogger
 	Console(v ...interface{}) *customLogger
+	Prefix(color func(...interface{}) string, prefix string) *customLogger
+	File(fileName string, v ...interface{})
 }
 
 var fileOs *os.File
