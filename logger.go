@@ -18,7 +18,6 @@ type (
 		prefix   string
 		color    func(...interface{}) string
 	}
-
 	// CustomLogger - interface of customLogger private struct with public methods
 	CustomLogger interface {
 		Info(v ...interface{}) *customLogger
@@ -89,7 +88,6 @@ func (l *customLogger) Console(v ...interface{}) *customLogger {
 	}
 
 	log.New(os.Stdout, l.color(l.prefix), log.Ldate).Println(v...)
-
 	return l
 }
 
