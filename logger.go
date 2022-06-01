@@ -13,11 +13,6 @@ type customLogger struct {
 	error    *log.Logger
 	debug    *log.Logger
 	tempData string
-}
-
-type customColors struct {
-	CustomColors
-	tempData string
 	prefix   string
 	color    func(...interface{}) string
 }
@@ -28,10 +23,7 @@ type CustomLogger interface {
 	Error(v ...interface{}) *customLogger
 	Debug(v ...interface{}) *customLogger
 	File(fileName string, v ...interface{})
-}
-
-type CustomColors interface {
-	Prefix(color func(...interface{}) string, prefix string) *customColors
+	Prefix(color func(...interface{}) string, prefix string) *customLogger
 	Console(v ...interface{}) *customLogger
 }
 
@@ -70,28 +62,23 @@ func (l *customLogger) Debug(v ...interface{}) *customLogger {
 	return l
 }
 
-func NewCustomColorsLogger() *customColors {
-	return &customColors{}
+func (l *customLogger) Prefix(color func(...interface{}) string, prefix string) *customLogger {
+	l.prefix = prefix
+	l.color = color
+	return l
 }
 
-func (c *customColors) Prefix(color func(...interface{}) string, prefix string) *customColors {
-	c.prefix = prefix
-	c.color = color
-	return c
-}
+func (l *customLogger) Console(v ...interface{}) *customLogger {
+	l.tempData = fmt.Sprintf("%v", v)
 
-func (c *customColors) Console(v ...interface{}) *customLogger {
-	logger := NewCustomLogger()
-	logger.tempData = fmt.Sprintf("%v", v)
-
-	if len([]rune(c.prefix)) == 0 || c.color == nil {
-		c.color = White
-		c.prefix = "DEFAULT: "
+	if len([]rune(l.prefix)) == 0 || l.color == nil {
+		l.color = White
+		l.prefix = "DEFAULT: "
 	}
 
-	log.New(os.Stdout, c.color(c.prefix), log.Ldate).Println(v...)
+	log.New(os.Stdout, l.color(l.prefix), log.Ldate).Println(v...)
 
-	return logger
+	return l
 }
 
 func (l *customLogger) File(file string, v ...interface{}) {
