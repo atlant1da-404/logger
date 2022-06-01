@@ -6,17 +6,6 @@ import (
 	"os"
 )
 
-var (
-	Black  = color("\033[1;30m%s\033[0m")
-	Red    = color("\033[1;31m%s\033[0m")
-	Green  = color("\033[1;32m%s\033[0m")
-	Yellow = color("\033[1;33m%s\033[0m")
-	Blue   = color("\033[1;34m%s\033[0m")
-	Purple = color("\033[1;35m%s\033[0m")
-	Teal   = color("\033[1;36m%s\033[0m")
-	White  = color("\033[1;37m%s\033[0m")
-)
-
 type customLogger struct {
 	CustomLogger
 	info     *log.Logger
@@ -46,22 +35,15 @@ type CustomColors interface {
 	Console(v ...interface{}) *customLogger
 }
 
-var (
-	loggerInstance *customLogger
-	colorsInstance *customColors
-	fileOs         *os.File
-)
+var fileOs *os.File
 
 func NewCustomLogger() *customLogger {
-
-	loggerInstance = &customLogger{
+	return &customLogger{
 		info:  log.New(os.Stdout, Teal("INFO: "), log.Ldate),
 		warn:  log.New(os.Stdout, Yellow("WARN: "), log.Ldate),
 		error: log.New(os.Stdout, Red("ERROR: "), log.Ldate),
 		debug: log.New(os.Stdout, Green("DEBUG: "), log.Ldate),
 	}
-
-	return loggerInstance
 }
 
 func (l *customLogger) Info(v ...interface{}) *customLogger {
@@ -89,8 +71,7 @@ func (l *customLogger) Debug(v ...interface{}) *customLogger {
 }
 
 func NewCustomColorsLogger() *customColors {
-	colorsInstance = &customColors{}
-	return colorsInstance
+	return &customColors{}
 }
 
 func (c *customColors) Prefix(color func(...interface{}) string, prefix string) *customColors {
@@ -114,7 +95,6 @@ func (c *customColors) Console(v ...interface{}) *customLogger {
 }
 
 func (l *customLogger) File(file string, v ...interface{}) {
-
 	if len(v) != 0 {
 		l.tempData = fmt.Sprintf("%v", v)
 	}
@@ -130,12 +110,4 @@ func (l *customLogger) File(file string, v ...interface{}) {
 	fileOs = f
 	logger := log.New(f, "", log.LstdFlags)
 	logger.Println(l.tempData)
-}
-
-func color(colorCode string) func(...interface{}) string {
-	sprint := func(args ...interface{}) string {
-		return fmt.Sprintf(colorCode,
-			fmt.Sprint(args...))
-	}
-	return sprint
 }
